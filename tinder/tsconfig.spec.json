@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@app/contracts": [
+        "libs/contracts/src"
+      ],
+      "@app/contracts/*": [
+        "libs/contracts/src/*"
+      ],
+      "@auth/prisma-client": [
+        "../auth-service/src/prisma/generated/client"
+      ],
+      "@tinder/prisma-client": [
+        "../tinder-service/src/prisma/generated/client"
+      ]
+    }
+  }
+}

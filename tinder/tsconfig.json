@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2023",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "paths": {
+      "@app/contracts": [
+        "dist/libs/contracts"
+      ],
+      "@app/contracts/*": [
+        "dist/libs/contracts/*"
+      ],
+      "@auth/prisma-client": [
+        "../auth-service/src/prisma/generated/client"
+      ],
+      "@tinder/prisma-client": [
+        "../tinder-service/src/prisma/generated/client"
+      ]
+    },
+    "incremental": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": false,
+    "strictBindCallApply": false,
+    "noFallthroughCasesInSwitch": false
+  }
+}

@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/prisma/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum InteractionType {
+  LIKE
+  DISLIKE
+  SUPERLIKE
+}
+
+enum SubscriptionPlan {
+  FREE
+  GOLD
+  PLATINUM
+}
+
+model User {
+  id                   Int           @id
+  email                String        @unique
+  role                 UserRole      @default(USER)
+  createdAt            DateTime      @default(now())
+  profile              Profile?
+  sentInteractions     Interaction[] @relation("SentInteractions")
+  receivedInteractions Interaction[] @relation("ReceivedInteractions")
+  matchesAsUser1       Match[]       @relation("User1Matches")
+  matchesAsUser2       Match[]       @relation("User2Matches")
+  messages             Message[]
+  subscription         Subscription?
+}
+
+model Profile {
+  id       Int      @id @default(autoincrement())
+  userId   Int      @unique
+  name     String
+  age      Int
+  bio      String?
+  gender   String?
+  photos   String[]
+  location String?
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Subscription {
+  id        Int              @id @default(autoincrement())
+  userId    Int              @unique
+  plan      SubscriptionPlan @default(FREE)
+  expiresAt DateTime?
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Interaction {
+  id         Int             @id @default(autoincrement())
+  fromUserId Int
+  toUserId   Int
+  type       InteractionType
+  createdAt  DateTime        @default(now())
+  fromUser   User            @relation("SentInteractions", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUser     User            @relation("ReceivedInteractions", fields: [toUserId], references: [id], onDelete: Cascade)
+
+  @@unique([fromUserId, toUserId])
+}
+
+model Match {
+  id        Int       @id @default(autoincrement())
+  user1Id   Int
+  user2Id   Int
+  createdAt DateTime  @default(now())
+  user1     User      @relation("User1Matches", fields: [user1Id], references: [id], onDelete: Cascade)
+  user2     User      @relation("User2Matches", fields: [user2Id], references: [id], onDelete: Cascade)
+  messages  Message[]
+
+  @@unique([user1Id, user2Id])
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  matchId   Int
+  senderId  Int
+  content   String
+  createdAt DateTime @default(now())
+  match     Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+}
