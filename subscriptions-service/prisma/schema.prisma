@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/prisma/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum SubscriptionPlan {
+  FREE
+  GOLD
+  PLATINUM
+}
+
+model Subscription {
+  id        Int              @id @default(autoincrement())
+  userId    Int              @unique
+  plan      SubscriptionPlan @default(FREE)
+  expiresAt DateTime?
+}

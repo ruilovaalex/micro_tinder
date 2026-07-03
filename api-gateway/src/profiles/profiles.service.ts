@@ -3,36 +3,45 @@ import { ClientProxy } from '@nestjs/microservices';
 import {
   CreateProfileDto,
   PROFILES_PATTERNS,
-  TINDER_SERVICE,
+  PROFILES_SERVICE,
   UpdateProfileDto,
+  USERS_PATTERNS,
+  USERS_SERVICE,
 } from '@app/contracts';
 import { sendRpc } from '../rpc/rpc-call';
 
 @Injectable()
 export class ProfilesGatewayService {
   constructor(
-    @Inject(TINDER_SERVICE) private readonly tinderClient: ClientProxy,
+    @Inject(PROFILES_SERVICE) private readonly profilesClient: ClientProxy,
+    @Inject(USERS_SERVICE) private readonly usersClient: ClientProxy,
   ) {}
 
   async findMine(userId: number) {
-    return sendRpc(this.tinderClient, PROFILES_PATTERNS.FIND_MINE, { userId });
+    return sendRpc(this.profilesClient, PROFILES_PATTERNS.FIND_MINE, { userId });
   }
 
   async findByUserId(userId: number) {
-    return sendRpc(this.tinderClient, PROFILES_PATTERNS.FIND_BY_USER_ID, {
-      userId,
-    });
+    const [profile, user] = await Promise.all([
+      sendRpc(this.profilesClient, PROFILES_PATTERNS.FIND_BY_USER_ID, { userId }),
+      sendRpc(this.usersClient, USERS_PATTERNS.FIND_ONE, { id: userId }),
+    ]);
+
+    return {
+      ...profile,
+      user,
+    };
   }
 
   async createOrReplace(userId: number, dto: CreateProfileDto) {
-    return sendRpc(this.tinderClient, PROFILES_PATTERNS.CREATE_OR_REPLACE, {
+    return sendRpc(this.profilesClient, PROFILES_PATTERNS.CREATE_OR_REPLACE, {
       userId,
       dto,
     });
   }
 
   async update(userId: number, dto: UpdateProfileDto) {
-    return sendRpc(this.tinderClient, PROFILES_PATTERNS.UPDATE, {
+    return sendRpc(this.profilesClient, PROFILES_PATTERNS.UPDATE, {
       userId,
       dto,
     });

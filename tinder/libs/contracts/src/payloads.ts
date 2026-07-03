@@ -31,10 +31,19 @@ export interface CreateInteractionPayload {
   dto: CreateInteractionDto;
 }
 
+export interface InteractionBetweenPayload {
+  fromUserId: number;
+  toUserId: number;
+}
+
 export interface TryCreateMatchPayload {
   fromUserId: number;
   toUserId: number;
   type: InteractionType;
+}
+
+export interface MatchIdPayload {
+  id: number;
 }
 
 export interface MatchMessagesPayload {

@@ -2,7 +2,15 @@ import { Module } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { PassportModule } from '@nestjs/passport';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { AUTH_SERVICE, TINDER_SERVICE } from '@app/contracts';
+import {
+  AUTH_SERVICE,
+  INTERACTIONS_SERVICE,
+  MATCHES_SERVICE,
+  MESSAGES_SERVICE,
+  PROFILES_SERVICE,
+  SUBSCRIPTIONS_SERVICE,
+  USERS_SERVICE,
+} from '@app/contracts';
 import { AppController } from './app.controller';
 import { AuthController } from './auth/auth.controller';
 import { AuthGatewayService } from './auth/auth.service';
@@ -38,11 +46,51 @@ const host = process.env.MICROSERVICES_HOST ?? '127.0.0.1';
         },
       },
       {
-        name: TINDER_SERVICE,
+        name: USERS_SERVICE,
         transport: Transport.TCP,
         options: {
           host,
-          port: Number(process.env.TINDER_SERVICE_PORT ?? 3002),
+          port: Number(process.env.USERS_SERVICE_PORT ?? 3002),
+        },
+      },
+      {
+        name: PROFILES_SERVICE,
+        transport: Transport.TCP,
+        options: {
+          host,
+          port: Number(process.env.PROFILES_SERVICE_PORT ?? 3003),
+        },
+      },
+      {
+        name: INTERACTIONS_SERVICE,
+        transport: Transport.TCP,
+        options: {
+          host,
+          port: Number(process.env.INTERACTIONS_SERVICE_PORT ?? 3004),
+        },
+      },
+      {
+        name: MATCHES_SERVICE,
+        transport: Transport.TCP,
+        options: {
+          host,
+          port: Number(process.env.MATCHES_SERVICE_PORT ?? 3005),
+        },
+      },
+      {
+        name: MESSAGES_SERVICE,
+        transport: Transport.TCP,
+        options: {
+          host,
+          port: Number(process.env.MESSAGES_SERVICE_PORT ?? 3006),
+        },
+      },
+      {
+        name: SUBSCRIPTIONS_SERVICE,
+        transport: Transport.TCP,
+        options: {
+          host,
+          port: Number(process.env.SUBSCRIPTIONS_SERVICE_PORT ?? 3007),
         },
       },
     ]),

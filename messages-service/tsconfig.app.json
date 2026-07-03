@@ -1,0 +1,7 @@
+{
+  "extends": "../tinder/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../tinder/dist/apps/messages-service"
+  },
+  "include": ["src/**/*.ts"]
+}

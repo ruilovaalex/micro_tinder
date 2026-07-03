@@ -1,0 +1,7 @@
+{
+  "extends": "../tinder/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../tinder/dist/apps/profiles-service"
+  },
+  "include": ["src/**/*.ts"]
+}

@@ -10,16 +10,21 @@ import {
   RefreshTokenDto,
   RegisterDto,
   SUBSCRIPTIONS_PATTERNS,
-  TINDER_SERVICE,
+  SUBSCRIPTIONS_SERVICE,
   USERS_PATTERNS,
+  USERS_SERVICE,
 } from '@app/contracts';
 import { sendRpc } from '../rpc/rpc-call';
+import { UsersGatewayService } from '../users/users.service';
 
 @Injectable()
 export class AuthGatewayService {
   constructor(
     @Inject(AUTH_SERVICE) private readonly authClient: ClientProxy,
-    @Inject(TINDER_SERVICE) private readonly tinderClient: ClientProxy,
+    @Inject(USERS_SERVICE) private readonly usersClient: ClientProxy,
+    @Inject(SUBSCRIPTIONS_SERVICE)
+    private readonly subscriptionsClient: ClientProxy,
+    private readonly usersService: UsersGatewayService,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -32,14 +37,18 @@ export class AuthGatewayService {
     };
 
     await sendRpc(
-      this.tinderClient,
+      this.usersClient,
       USERS_PATTERNS.CREATE_FROM_AUTH,
       createDomainUserDto,
     );
 
-    await sendRpc(this.tinderClient, SUBSCRIPTIONS_PATTERNS.ENSURE_FOR_USER, {
+    await sendRpc(
+      this.subscriptionsClient,
+      SUBSCRIPTIONS_PATTERNS.ENSURE_FOR_USER,
+      {
         userId: authResponse.user.id,
-      });
+      },
+    );
 
     return authResponse;
   }
@@ -55,9 +64,7 @@ export class AuthGatewayService {
   async me(authUser: AuthenticatedUser) {
     const [authData, domainUser] = await Promise.all([
       sendRpc(this.authClient, AUTH_PATTERNS.ME, authUser),
-      sendRpc(this.tinderClient, USERS_PATTERNS.FIND_ONE, {
-        id: authUser.userId,
-      }),
+      this.usersService.findOne(authUser.userId),
     ]);
 
     return {

@@ -36,13 +36,58 @@
         "tsConfigPath": "../auth-service/tsconfig.app.json"
       }
     },
-    "tinder-service": {
+    "users-service": {
       "type": "application",
-      "root": "../tinder-service",
+      "root": "../users-service",
       "entryFile": "main",
-      "sourceRoot": "../tinder-service/src",
+      "sourceRoot": "../users-service/src",
       "compilerOptions": {
-        "tsConfigPath": "../tinder-service/tsconfig.app.json"
+        "tsConfigPath": "../users-service/tsconfig.app.json"
+      }
+    },
+    "profiles-service": {
+      "type": "application",
+      "root": "../profiles-service",
+      "entryFile": "main",
+      "sourceRoot": "../profiles-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "../profiles-service/tsconfig.app.json"
+      }
+    },
+    "interactions-service": {
+      "type": "application",
+      "root": "../interactions-service",
+      "entryFile": "main",
+      "sourceRoot": "../interactions-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "../interactions-service/tsconfig.app.json"
+      }
+    },
+    "matches-service": {
+      "type": "application",
+      "root": "../matches-service",
+      "entryFile": "main",
+      "sourceRoot": "../matches-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "../matches-service/tsconfig.app.json"
+      }
+    },
+    "messages-service": {
+      "type": "application",
+      "root": "../messages-service",
+      "entryFile": "main",
+      "sourceRoot": "../messages-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "../messages-service/tsconfig.app.json"
+      }
+    },
+    "subscriptions-service": {
+      "type": "application",
+      "root": "../subscriptions-service",
+      "entryFile": "main",
+      "sourceRoot": "../subscriptions-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "../subscriptions-service/tsconfig.app.json"
       }
     }
   }

@@ -23,10 +23,12 @@ export const PROFILES_PATTERNS = {
 export const INTERACTIONS_PATTERNS = {
   CREATE: { cmd: 'interactions.create' },
   FIND_MINE: { cmd: 'interactions.find-mine' },
+  FIND_BETWEEN: { cmd: 'interactions.find-between' },
 } as const;
 
 export const MATCHES_PATTERNS = {
   FIND_MINE: { cmd: 'matches.find-mine' },
+  FIND_ONE: { cmd: 'matches.find-one' },
   TRY_CREATE: { cmd: 'matches.try-create' },
 } as const;
 

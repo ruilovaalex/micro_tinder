@@ -19,9 +19,6 @@
       ],
       "@auth/prisma-client": [
         "../auth-service/src/prisma/generated/client"
-      ],
-      "@tinder/prisma-client": [
-        "../tinder-service/src/prisma/generated/client"
       ]
     },
     "incremental": true,
