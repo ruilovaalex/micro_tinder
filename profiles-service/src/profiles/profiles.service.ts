@@ -1,5 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateProfileDto, UpdateProfileDto } from '@app/contracts';
+import { Injectable } from '@nestjs/common';
+import { CreateProfileDto, rpcError, UpdateProfileDto } from '@app/contracts';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class ProfilesService {
     });
 
     if (!profile) {
-      throw new NotFoundException('Perfil no encontrado');
+      throw rpcError(404, 'Perfil no encontrado', 'Not Found');
     }
 
     return profile;
@@ -24,7 +24,7 @@ export class ProfilesService {
     });
 
     if (!profile) {
-      throw new NotFoundException('Perfil no encontrado');
+      throw rpcError(404, 'Perfil no encontrado', 'Not Found');
     }
 
     return profile;

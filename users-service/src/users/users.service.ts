@@ -1,5 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateDomainUserDto } from '@app/contracts';
+import { Injectable } from '@nestjs/common';
+import { CreateDomainUserDto, rpcError } from '@app/contracts';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -51,7 +51,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('Usuario no encontrado');
+      throw rpcError(404, 'Usuario no encontrado', 'Not Found');
     }
 
     return user;

@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient, UserRole } from './generated/client';
+import { PrismaClient, UserRole } from '../src/prisma/generated/client/index.js';
 
 const connectionString = process.env.AUTH_DATABASE_URL;
 if (!connectionString) {
@@ -80,7 +80,7 @@ async function main() {
     });
   }
 
-  for (const role of Object.values(UserRole)) {
+  for (const role of Object.values(UserRole) as UserRole[]) {
     const rolePermissions = permissionsByRole[role];
     const permissions = await prisma.permission.findMany({
       where: {

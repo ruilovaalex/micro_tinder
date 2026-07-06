@@ -1,5 +1,5 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateInteractionDto } from '@app/contracts';
+import { Injectable } from '@nestjs/common';
+import { CreateInteractionDto, rpcError } from '@app/contracts';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -8,7 +8,11 @@ export class InteractionsService {
 
   async create(fromUserId: number, dto: CreateInteractionDto) {
     if (fromUserId === dto.toUserId) {
-      throw new BadRequestException('No puedes interactuar contigo mismo');
+      throw rpcError(
+        400,
+        'No puedes interactuar contigo mismo',
+        'Bad Request',
+      );
     }
 
     return this.prisma.interaction.upsert({

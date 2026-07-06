@@ -1,13 +1,10 @@
-import {
-  ForbiddenException,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   CreateMessageDto,
   MATCHES_PATTERNS,
   MATCHES_SERVICE,
+  rpcError,
 } from '@app/contracts';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../prisma/prisma.service';
@@ -46,7 +43,7 @@ export class MessagesService {
     );
 
     if (match.user1Id !== userId && match.user2Id !== userId) {
-      throw new ForbiddenException('No perteneces a este chat');
+      throw rpcError(403, 'No perteneces a este chat', 'Forbidden');
     }
   }
 }

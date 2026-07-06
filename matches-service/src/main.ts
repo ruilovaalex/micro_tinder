@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { MicroserviceRpcExceptionFilter } from '@app/contracts';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -23,6 +24,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
+  app.useGlobalFilters(new MicroserviceRpcExceptionFilter());
 
   await app.listen();
 }

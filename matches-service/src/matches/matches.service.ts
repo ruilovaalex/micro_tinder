@@ -1,10 +1,11 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import {
   InteractionBetweenPayload,
   INTERACTIONS_PATTERNS,
   INTERACTIONS_SERVICE,
   InteractionType,
+  rpcError,
 } from '@app/contracts';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../prisma/prisma.service';
@@ -32,7 +33,7 @@ export class MatchesService {
     });
 
     if (!match) {
-      throw new NotFoundException('Match no encontrado');
+      throw rpcError(404, 'Match no encontrado', 'Not Found');
     }
 
     return match;

@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Prisma, UserRole } from '@auth/prisma-client';
@@ -13,6 +9,7 @@ import {
   LoginDto,
   RefreshTokenDto,
   RegisterDto,
+  rpcError,
 } from '@app/contracts';
 
 @Injectable()
@@ -38,7 +35,7 @@ export class AuthService {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
-        throw new ConflictException('El usuario ya existe');
+        throw rpcError(409, 'El usuario ya existe', 'Conflict');
       }
       throw error;
     }
@@ -50,12 +47,12 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Credenciales invalidas');
+      throw rpcError(401, 'Credenciales invalidas', 'Unauthorized');
     }
 
     const passwordMatches = await bcrypt.compare(dto.password, user.password);
     if (!passwordMatches) {
-      throw new UnauthorizedException('Credenciales invalidas');
+      throw rpcError(401, 'Credenciales invalidas', 'Unauthorized');
     }
 
     return this.buildAuthResponse(user.id, user.email, user.role);
@@ -74,7 +71,7 @@ export class AuthService {
     });
 
     if (!user || !user.refreshTokenHash) {
-      throw new UnauthorizedException('Refresh token invalido');
+      throw rpcError(401, 'Refresh token invalido', 'Unauthorized');
     }
 
     const refreshTokenMatches = await bcrypt.compare(
@@ -83,7 +80,7 @@ export class AuthService {
     );
 
     if (!refreshTokenMatches) {
-      throw new UnauthorizedException('Refresh token invalido');
+      throw rpcError(401, 'Refresh token invalido', 'Unauthorized');
     }
 
     return this.buildAuthResponse(user.id, user.email, user.role);
@@ -101,7 +98,7 @@ export class AuthService {
   }
 
   async me(authUser: AuthenticatedUser) {
-    const user = await this.prisma.user.findUniqueOrThrow({
+    const user = await this.prisma.user.findUnique({
       where: { id: authUser.userId },
       select: {
         id: true,
@@ -111,6 +108,10 @@ export class AuthService {
       },
     });
 
+    if (!user) {
+      throw rpcError(404, 'Usuario no encontrado', 'Not Found');
+    }
+
     return {
       ...user,
       permissions: authUser.permissions,
@@ -119,7 +120,7 @@ export class AuthService {
 
   async validateUser(payload: JwtPayload): Promise<AuthenticatedUser> {
     if (payload.tokenType !== 'access') {
-      throw new UnauthorizedException('Token de acceso invalido');
+      throw rpcError(401, 'Token de acceso invalido', 'Unauthorized');
     }
 
     const user = await this.prisma.user.findUnique({
@@ -128,7 +129,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Usuario no autorizado');
+      throw rpcError(401, 'Usuario no autorizado', 'Unauthorized');
     }
 
     const rolePermissions = await this.prisma.rolePermission.findMany({
@@ -201,12 +202,16 @@ export class AuthService {
         await this.jwtService.verifyAsync<JwtPayload>(refreshToken);
 
       if (payload.tokenType !== 'refresh') {
-        throw new UnauthorizedException('Refresh token invalido');
+        throw rpcError(401, 'Refresh token invalido', 'Unauthorized');
       }
 
       return payload;
     } catch {
-      throw new UnauthorizedException('Refresh token invalido o expirado');
+      throw rpcError(
+        401,
+        'Refresh token invalido o expirado',
+        'Unauthorized',
+      );
     }
   }
 

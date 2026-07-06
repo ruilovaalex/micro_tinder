@@ -6,5 +6,7 @@ export * from './message.dto';
 export * from './patterns';
 export * from './payloads';
 export * from './profile.dto';
+export * from './rpc-error';
+export * from './rpc-exception.filter';
 export * from './service-tokens';
 export * from './subscription.dto';
